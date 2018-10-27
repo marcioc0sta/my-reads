@@ -1,0 +1,45 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "globals": {
+    "expect": true,
+    "it": true,
+    "describe": true
+  },
+  "rules": {
+    "quotes": [2, "single"],
+    "strict": [2, "never"],
+    "no-unused-vars": 2,
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
+    "react/react-in-jsx-scope": 2,
+    "react/jsx-no-undef": 1, // Disallow use of undefined components
+    "react/no-direct-mutation-state": 1, // Prevent direct mutation of state
+    "no-undef": 1, // Disallow use of undefined variables
+    "no-var": 1, // Require the use of let or const instead of var (ES6)
+    "no-console": 2,
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1,
+    "import/no-named-as-default": 0,
+    "import/order": [2, {"newlines-between": "always-and-inside-groups"}],
+    "react/no-deprecated": 1
+  },
+  "plugins": [
+    "react",
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    }
+  }
+}
