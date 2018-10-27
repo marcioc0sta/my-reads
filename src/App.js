@@ -28,10 +28,12 @@ class App extends Component {
   }
 
   organizeShelfs(book) {
+    const booksShelf = book.shelf;
+
     this.setState(prevState => ({
       booksShelf: {
         ...prevState.booksShelf,
-        [book.shelf]: prevState.booksShelf[book.shelf].concat(book),
+        [booksShelf]: prevState.booksShelf[booksShelf].concat(book),
         isLoading: false,
       }
     }));
