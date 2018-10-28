@@ -1,25 +1,56 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route } from 'react-router-dom';
 
+import MainView from './views/MainView/MainView';
+import SearchView from './views/SearchView/SearchView';
+
+import * as BooksAPI from './api/BooksAPI';
 class App extends Component {
+  state = {
+    booksShelf: {
+      currentlyReading: [],
+      wantToRead: [],
+      read: [],
+      isLoading: true,
+    },
+  }
+
+  componentDidMount() {
+    this.loadBooks();
+  }
+
+  loadBooks() {
+    BooksAPI.getAll().then(booksList => {
+      booksList.forEach(book => {
+        this.organizeShelfs(book);
+      });
+    });
+  }
+
+  organizeShelfs(book) {
+    const booksShelf = book.shelf;
+
+    this.setState(prevState => ({
+      booksShelf: {
+        ...prevState.booksShelf,
+        [booksShelf]: prevState.booksShelf[booksShelf].concat(book),
+        isLoading: false,
+      }
+    }));
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Route
+          exact
+          path="/"
+          component={MainView}
+        />
+        <Route
+          path="/search"
+          component={SearchView}
+        />
       </div>
     );
   }
