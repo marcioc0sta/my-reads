@@ -1,5 +1,9 @@
 import React from 'react';
 
-const MainView = () => <div>MyReads</div>;
+import Header from '../../components/Header/Header';
+
+const MainView = () => (
+  <Header />
+);
 
 export default MainView;

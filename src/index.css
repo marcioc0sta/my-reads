@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+html, body, .root {
+  height: 100%;
+}
+body {
+  font: 400 16px 'Open Sans', sans-serif;
+  line-height: 1.5;
+}
+body, .app {
+  background: white;
+}
+
+
