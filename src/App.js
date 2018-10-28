@@ -40,12 +40,15 @@ class App extends Component {
   }
 
   render() {
+    const { booksShelf } = this.state;
     return (
       <div className="App">
         <Route
           exact
           path="/"
-          component={MainView}
+          render={() => (
+            <MainView booksShelf={booksShelf} />
+          )}
         />
         <Route
           path="/search"

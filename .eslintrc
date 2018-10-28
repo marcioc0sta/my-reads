@@ -23,6 +23,7 @@
     "describe": true
   },
   "rules": {
+    "semi": 2,
     "quotes": [2, "single"],
     "strict": [2, "never"],
     "no-unused-vars": 2,

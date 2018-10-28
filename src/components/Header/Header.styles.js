@@ -1,9 +1,10 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 import { colors } from '../../Globals';
 
 const ListBooksTitle = styled.div`
   background: ${colors.green};
+  margin-bottom: 20px;
   padding: 10px 0;
   text-align: center;
 `;
@@ -18,4 +19,4 @@ const ListBooksTitleText = styled.h1`
 export {
   ListBooksTitle,
   ListBooksTitleText
-}
+};
