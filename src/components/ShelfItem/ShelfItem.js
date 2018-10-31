@@ -8,13 +8,14 @@ import {
   BookAuthors,
 } from './ShelfItem.styles';
 
-const ShelfItem = ({ bookTitle, authors, cover }) => (
+const ShelfItem = ({ book, bookTitle, authors, cover, moveToShelf }) => (
     <Book>
       <BookTop>
         <BookCover imageUrl={cover}></BookCover>
       </BookTop>
       <BookTitle>{bookTitle}</BookTitle>
       <BookAuthors>{authors.map(author => author)}</BookAuthors>
+      <button onClick={() => moveToShelf(book, 'wantToRead')}>moverLivro</button>
     </Book>
 );
 

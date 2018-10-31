@@ -19,7 +19,7 @@ class App extends Component {
     this.loadBooks();
   }
 
-  loadBooks() {
+  loadBooks = () => {
     BooksAPI.getAll().then(booksList => {
       booksList.forEach(book => {
         this.organizeShelfs(book);
@@ -27,14 +27,34 @@ class App extends Component {
     });
   }
 
-  organizeShelfs(book) {
-    const booksShelf = book.shelf;
+  moveToShelf = (book, shelf) => {
+    BooksAPI.update(book, shelf).then(() => {
+      this.updateShelfs(book, shelf);
+    });
+  }
 
+  organizeShelfs = book => {
+    this.setState(() => ({
+      booksShelf: {
+        ...this.state.booksShelf,
+        [book.shelf]: this.state.booksShelf[book.shelf].concat(book),
+        isLoading: false,
+      }
+    }));
+  }
+
+  updateShelfs = (book, newShelf) => {
+    const { booksShelf } = this.state;
+    const {shelf, id} = book;
+    const updatedShelf = booksShelf[shelf].filter(filteredBook => (
+      filteredBook.id !== id
+    ));
+    
     this.setState(prevState => ({
       booksShelf: {
         ...prevState.booksShelf,
-        [booksShelf]: prevState.booksShelf[booksShelf].concat(book),
-        isLoading: false,
+        [book.shelf]: updatedShelf,
+        [newShelf]: this.state.booksShelf[newShelf].concat(book),
       }
     }));
   }
@@ -47,7 +67,7 @@ class App extends Component {
           exact
           path="/"
           render={() => (
-            <MainView booksShelf={booksShelf} />
+            <MainView moveToShelf={this.moveToShelf} booksShelf={booksShelf} />
           )}
         />
         <Route
