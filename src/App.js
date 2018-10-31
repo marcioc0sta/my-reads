@@ -34,10 +34,11 @@ class App extends Component {
   }
 
   organizeShelfs = book => {
+    const { booksShelf } = this.state;
     this.setState(() => ({
       booksShelf: {
         ...this.state.booksShelf,
-        [book.shelf]: this.state.booksShelf[book.shelf].concat(book),
+        [book.shelf]: booksShelf[book.shelf].concat(book),
         isLoading: false,
       }
     }));
@@ -45,16 +46,16 @@ class App extends Component {
 
   updateShelfs = (book, newShelf) => {
     const { booksShelf } = this.state;
-    const {shelf, id} = book;
+    const { shelf, id } = book;
     const updatedShelf = booksShelf[shelf].filter(filteredBook => (
       filteredBook.id !== id
     ));
-    
+
     this.setState(prevState => ({
       booksShelf: {
         ...prevState.booksShelf,
         [book.shelf]: updatedShelf,
-        [newShelf]: this.state.booksShelf[newShelf].concat(book),
+        [newShelf]: booksShelf[newShelf].concat(book),
       }
     }));
   }
