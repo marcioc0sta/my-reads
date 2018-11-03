@@ -51,6 +51,13 @@ class App extends Component {
 
     if(newShelf === shelf) return;
 
+    this.setState({
+      booksShelf: {
+        ...this.state.booksShelf,
+        isLoading: true,
+      }
+    });
+
     const updatedShelf = booksShelf[shelf].filter(filteredBook => (
       filteredBook.id !== id
     ));
@@ -61,6 +68,7 @@ class App extends Component {
           ...this.state.booksShelf,
           [shelf]: updatedShelf,
           [updatedBook.shelf]: booksShelf[updatedBook.shelf].concat(updatedBook),
+          isLoading: false,
         }
       }));
     });
