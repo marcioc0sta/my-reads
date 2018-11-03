@@ -26,7 +26,7 @@ class ShelfChanger extends Component {
         <BookShelfChangerSelect 
           onChange={event => this.onShelfChange(event.target.value)}
         >
-          <option disabled>Move to...</option>
+          <option disabled="">Move to...</option>
           {this.renderShelfsName().map(shelfName => (
             <option key={shelfName} value={shelfName}>
               {ShelfNames[shelfName]}
