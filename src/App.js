@@ -56,9 +56,9 @@ class App extends Component {
     ));
 
     BooksAPI.get(id).then(updatedBook => {
-      this.setState(prevState => ({
+      this.setState(() => ({
         booksShelf: {
-          ...prevState.booksShelf,
+          ...this.state.booksShelf,
           [shelf]: updatedShelf,
           [updatedBook.shelf]: booksShelf[updatedBook.shelf].concat(updatedBook),
         }
