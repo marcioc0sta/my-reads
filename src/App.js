@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import MainView from './views/MainView/MainView';
 import SearchView from './views/SearchView/SearchView';
+
 
 import * as BooksAPI from './api/BooksAPI';
 class App extends Component {
@@ -45,18 +48,30 @@ class App extends Component {
     }));
   }
 
-  updateShelfs = (book, newShelf) => {
-    const { booksShelf } = this.state;
-    const { shelf, id } = book;
-
-    if(newShelf === shelf) return;
-
+  activateLoading = () => {
     this.setState({
       booksShelf: {
         ...this.state.booksShelf,
         isLoading: true,
       }
     });
+  }
+
+  notify = () => toast('The book is already on the shelf', {
+    type: 'info',
+    position: 'bottom-center',
+  });
+
+  updateShelfs = (book, newShelf) => {
+    const { booksShelf } = this.state;
+    const { shelf, id } = book;
+
+    if(newShelf === shelf) {
+      this.notify();
+      return;
+    }
+
+    this.activateLoading();
 
     const updatedShelf = booksShelf[shelf].filter(filteredBook => (
       filteredBook.id !== id
@@ -89,6 +104,7 @@ class App extends Component {
           path="/search"
           component={SearchView}
         />
+        <ToastContainer type="warning" />
       </div>
     );
   }
