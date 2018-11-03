@@ -1,5 +1,7 @@
 import React from 'react';
 
+import ShelfChanger from '../ShelfChanger/ShelfChanger';
+
 import {
   Book,
   BookTop,
@@ -8,15 +10,22 @@ import {
   BookAuthors,
 } from './ShelfItem.styles';
 
-const ShelfItem = ({ book, bookTitle, authors, cover, moveToShelf }) => (
+const ShelfItem = props => {
+  const { book, bookTitle, authors, cover, moveToShelf, booksShelf } = props;
+  return (
     <Book>
       <BookTop>
         <BookCover imageUrl={cover}></BookCover>
+        <ShelfChanger
+          book={book}
+          booksShelf={booksShelf}
+          moveToShelf={moveToShelf}
+        />
       </BookTop>
       <BookTitle>{bookTitle}</BookTitle>
       <BookAuthors>{authors.map(author => author)}</BookAuthors>
-      <button onClick={() => moveToShelf(book, 'wantToRead')}>moverLivro</button>
     </Book>
-);
+  );
+};
 
 export default ShelfItem;

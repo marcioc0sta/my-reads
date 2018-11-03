@@ -11,6 +11,7 @@ class App extends Component {
       currentlyReading: [],
       wantToRead: [],
       read: [],
+      none: [],
       isLoading: true,
     },
   }

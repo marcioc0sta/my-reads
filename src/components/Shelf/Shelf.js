@@ -8,7 +8,7 @@ import {
   BooksGrid,
 } from './Shelf.styles';
 
-const Shelf = ({ shelfTitle, books, moveToShelf }) => (
+const Shelf = ({ shelfTitle, books, moveToShelf, booksShelf }) => (
   <ListBooksContent>
     <BookShelfTitle>{shelfTitle}</BookShelfTitle>
     <BooksGrid>
@@ -16,6 +16,7 @@ const Shelf = ({ shelfTitle, books, moveToShelf }) => (
         return (
           <li key={book.id}>
             <ShelfItem 
+              booksShelf={booksShelf}
               moveToShelf={moveToShelf}
               book={book}
               bookTitle={book.title}
