@@ -48,17 +48,22 @@ class App extends Component {
   updateShelfs = (book, newShelf) => {
     const { booksShelf } = this.state;
     const { shelf, id } = book;
+
+    if(newShelf === shelf) return;
+
     const updatedShelf = booksShelf[shelf].filter(filteredBook => (
       filteredBook.id !== id
     ));
 
-    this.setState(prevState => ({
-      booksShelf: {
-        ...prevState.booksShelf,
-        [book.shelf]: updatedShelf,
-        [newShelf]: booksShelf[newShelf].concat(book),
-      }
-    }));
+    BooksAPI.get(id).then(updatedBook => {
+      this.setState(prevState => ({
+        booksShelf: {
+          ...prevState.booksShelf,
+          [shelf]: updatedShelf,
+          [updatedBook.shelf]: booksShelf[updatedBook.shelf].concat(updatedBook),
+        }
+      }));
+    });
   }
 
   render() {
