@@ -25,6 +25,7 @@ class ShelfChanger extends Component {
     return (
       <BookShelfChanger>
         <BookShelfChangerSelect
+          title="Manage your book shelf"
           onChange={event => this.onShelfChange(event.target.value)}
         >
           <option disabled="">Move to...</option>
