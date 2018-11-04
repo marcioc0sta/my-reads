@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { ShelfNames } from './ShelfNames.enum';
 
-import { 
+import {
   BookShelfChanger,
   BookShelfChangerSelect,
 } from './ShelfChanger.styles';
@@ -21,15 +21,17 @@ class ShelfChanger extends Component {
   }
 
   render() {
+    const { book } = this.props;
     return (
       <BookShelfChanger>
-        <BookShelfChangerSelect 
+        <BookShelfChangerSelect
           onChange={event => this.onShelfChange(event.target.value)}
         >
           <option disabled="">Move to...</option>
-          {this.renderShelfsName().map(shelfName => (
-            <option key={shelfName} value={shelfName}>
-              {ShelfNames[shelfName]}
+          {this.renderShelfsName().map(shelfObjKey => (
+            <option key={shelfObjKey} value={shelfObjKey}>
+              {book.shelf === shelfObjKey && '✓'}
+              {ShelfNames[shelfObjKey]}
             </option>
           ))}
         </BookShelfChangerSelect>
