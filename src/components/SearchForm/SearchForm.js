@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { debounce } from 'lodash';
 
-import { 
+import {
   SearchBooksBar,
   SearchBooksFormWrapper,
   SearchBooksBarInput,
@@ -9,16 +10,24 @@ import {
 } from './SearchForm.styles';
 
 class SearchForm extends Component {
-  render(){
+  onInputSearchChange = value => {
+    const { makeSearchRequest } = this.props;
+    makeSearchRequest(value);
+  }
+
+  render() {
+    const debounceSearchChange = debounce(this.onInputSearchChange, 500);
     return (
       <SearchBooksBar>
         <CloseSearch>
           <Link title="back to home" to="/">back to home</Link>
         </CloseSearch>
         <SearchBooksFormWrapper>
-          <form className="search-form">
-            <SearchBooksBarInput type="text" placeholder="Search by title or author"/>
-          </form>
+          <SearchBooksBarInput
+            onChange={event => debounceSearchChange(event.target.value)}
+            type="text"
+            placeholder="Search by title or author"
+          />
         </SearchBooksFormWrapper>
       </SearchBooksBar>
     );

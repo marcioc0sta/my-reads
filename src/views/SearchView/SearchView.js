@@ -2,9 +2,9 @@ import React from 'react';
 
 import SearchForm from '../../components/SearchForm/SearchForm';
 
-const SearchView = () => (
+const SearchView = ({ makeSearchRequest }) => (
   <div className="search-books">
-    <SearchForm />
+    <SearchForm makeSearchRequest={makeSearchRequest} />
   </div>
 );
 

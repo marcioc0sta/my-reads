@@ -17,6 +17,7 @@ class App extends Component {
       none: [],
       isLoading: true,
     },
+    searchResults: [],
   }
 
   componentDidMount() {
@@ -34,6 +35,12 @@ class App extends Component {
   moveToShelf = (book, shelf) => {
     BooksAPI.update(book, shelf).then(() => {
       this.updateShelfs(book, shelf);
+    });
+  }
+
+  makeSearchRequest = searchTerm => { 
+    BooksAPI.search(searchTerm).then(searchResults => {
+      this.setState({searchResults});
     });
   }
 
@@ -90,7 +97,7 @@ class App extends Component {
   }
 
   render() {
-    const { booksShelf } = this.state;
+    const { booksShelf, searchResults } = this.state;
     return (
       <div className="App">
         <Route
@@ -102,7 +109,13 @@ class App extends Component {
         />
         <Route
           path="/search"
-          component={SearchView}
+          render={() => (
+            <SearchView 
+              searchResults={searchResults}
+              makeSearchRequest={this.makeSearchRequest}
+              moveToShelf={this.moveToShelf}
+            />
+          )}
         />
         <ToastContainer type="warning" />
       </div>
