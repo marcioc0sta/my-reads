@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import MainView from './views/MainView/MainView';
 import SearchView from './views/SearchView/SearchView';
+
 
 import * as BooksAPI from './api/BooksAPI';
 class App extends Component {
@@ -11,6 +14,7 @@ class App extends Component {
       currentlyReading: [],
       wantToRead: [],
       read: [],
+      none: [],
       isLoading: true,
     },
   }
@@ -19,7 +23,7 @@ class App extends Component {
     this.loadBooks();
   }
 
-  loadBooks() {
+  loadBooks = () => {
     BooksAPI.getAll().then(booksList => {
       booksList.forEach(book => {
         this.organizeShelfs(book);
@@ -27,30 +31,80 @@ class App extends Component {
     });
   }
 
-  organizeShelfs(book) {
-    const booksShelf = book.shelf;
+  moveToShelf = (book, shelf) => {
+    BooksAPI.update(book, shelf).then(() => {
+      this.updateShelfs(book, shelf);
+    });
+  }
 
-    this.setState(prevState => ({
+  organizeShelfs = book => {
+    const { booksShelf } = this.state;
+    this.setState(() => ({
       booksShelf: {
-        ...prevState.booksShelf,
-        [booksShelf]: prevState.booksShelf[booksShelf].concat(book),
+        ...this.state.booksShelf,
+        [book.shelf]: booksShelf[book.shelf].concat(book),
         isLoading: false,
       }
     }));
   }
 
+  activateLoading = () => {
+    this.setState({
+      booksShelf: {
+        ...this.state.booksShelf,
+        isLoading: true,
+      }
+    });
+  }
+
+  notify = () => toast('The book is already on the shelf', {
+    type: 'info',
+    position: 'bottom-center',
+  });
+
+  updateShelfs = (book, newShelf) => {
+    const { booksShelf } = this.state;
+    const { shelf, id } = book;
+
+    if(newShelf === shelf) {
+      this.notify();
+      return;
+    }
+
+    this.activateLoading();
+
+    const updatedShelf = booksShelf[shelf].filter(filteredBook => (
+      filteredBook.id !== id
+    ));
+
+    BooksAPI.get(id).then(updatedBook => {
+      this.setState(() => ({
+        booksShelf: {
+          ...this.state.booksShelf,
+          [shelf]: updatedShelf,
+          [updatedBook.shelf]: booksShelf[updatedBook.shelf].concat(updatedBook),
+          isLoading: false,
+        }
+      }));
+    });
+  }
+
   render() {
+    const { booksShelf } = this.state;
     return (
       <div className="App">
         <Route
           exact
           path="/"
-          component={MainView}
+          render={() => (
+            <MainView moveToShelf={this.moveToShelf} booksShelf={booksShelf} />
+          )}
         />
         <Route
           path="/search"
           component={SearchView}
         />
+        <ToastContainer type="warning" />
       </div>
     );
   }
