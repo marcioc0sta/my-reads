@@ -16,7 +16,6 @@ class ShelfChanger extends Component {
   renderShelfsName = () => {
     const { booksShelf } = this.props;
     const { isLoading, ...shelfsObject } = booksShelf; // eslint-disable-line
-
     return Object.keys(shelfsObject);
   }
 

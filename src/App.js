@@ -10,6 +10,7 @@ import SearchView from './views/SearchView/SearchView';
 import * as BooksAPI from './api/BooksAPI';
 class App extends Component {
   state = {
+    booksList: [],
     booksShelf: {
       currentlyReading: [],
       wantToRead: [],
@@ -18,6 +19,7 @@ class App extends Component {
       isLoading: true,
     },
     searchResults: [],
+    searchError: ''
   }
 
   componentDidMount() {
@@ -26,6 +28,9 @@ class App extends Component {
 
   loadBooks = () => {
     BooksAPI.getAll().then(booksList => {
+      this.setState(() => ({
+        booksList
+      }));
       booksList.forEach(book => {
         this.organizeShelfs(book);
       });
@@ -39,8 +44,33 @@ class App extends Component {
   }
 
   makeSearchRequest = searchTerm => { 
+    const mybooks = this.state.booksList;
+    let booksFromResult = [];
+
+    if(searchTerm.length === 0) return;
+
     BooksAPI.search(searchTerm).then(searchResults => {
-      this.setState({searchResults});
+      searchResults.map(bookFromResult => {
+        bookFromResult.shelf = 'none';
+        return booksFromResult = booksFromResult.concat(bookFromResult);
+      });
+
+      mybooks.map(book => {
+        return booksFromResult.forEach(item => {
+          if(item.id === book.id) {
+            const filtered = booksFromResult.filter(item => item.id !== book.id);
+            booksFromResult = filtered.concat(book);
+          }
+        });
+      });
+      
+      this.setState(() => ({
+        searchResults: booksFromResult,
+      }));
+    }).catch(() => {
+      this.setState({
+        searchError: 'You are making a invalid search, please, check the search term',
+      });
     });
   }
 
@@ -70,7 +100,7 @@ class App extends Component {
   });
 
   updateShelfs = (book, newShelf) => {
-    const { booksShelf } = this.state;
+    const { booksShelf, searchResults } = this.state;
     const { shelf, id } = book;
 
     if(newShelf === shelf) {
@@ -85,19 +115,25 @@ class App extends Component {
     ));
 
     BooksAPI.get(id).then(updatedBook => {
+      const updatedSearch = searchResults.filter(filteredBook => (
+        filteredBook.id !== updatedBook.id
+      ));
+
       this.setState(() => ({
         booksShelf: {
           ...this.state.booksShelf,
           [shelf]: updatedShelf,
-          [updatedBook.shelf]: booksShelf[updatedBook.shelf].concat(updatedBook),
+          [newShelf]: booksShelf[newShelf].concat(updatedBook),
           isLoading: false,
-        }
+        },
+        searchResults: [...updatedSearch, updatedBook],
       }));
     });
   }
 
   render() {
     const { booksShelf, searchResults } = this.state;
+
     return (
       <div className="App">
         <Route
@@ -110,7 +146,8 @@ class App extends Component {
         <Route
           path="/search"
           render={() => (
-            <SearchView 
+            <SearchView
+              booksShelf={booksShelf}
               searchResults={searchResults}
               makeSearchRequest={this.makeSearchRequest}
               moveToShelf={this.moveToShelf}

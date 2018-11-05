@@ -5,6 +5,7 @@ import { colors } from '../../Globals';
 import arrowBack from '../../icons/arrow-back.svg';
 
 const SearchBooksBar = styled.div`
+  background: ${colors.white};
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 0 6px rgba(0,0,0,0.23);
   display: flex;
   left: 0;
@@ -15,7 +16,6 @@ const SearchBooksBar = styled.div`
 `;
 
 const SearchBooksFormWrapper = styled.div`
-  background: ${colors.white};
   flex: 1;
 `;
 

@@ -27,9 +27,10 @@ const BookTitle = styled.div`
   margin-top: 10px;
 `;
 
-const BookAuthors = styled.div`
+const BookAuthors = styled.ul`
   color: ${colors.gray200}
   font-size: 0.8em;
+  list-style: none;
 `;
 
 export {
