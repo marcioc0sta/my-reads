@@ -17,10 +17,13 @@ class SearchForm extends Component {
 
   render() {
     const debounceSearchChange = debounce(this.onInputSearchChange, 500);
+    const { resetSearchState } = this.props;
     return (
       <SearchBooksBar>
         <CloseSearch>
-          <Link title="back to home" to="/">back to home</Link>
+          <Link onClick={() => resetSearchState()} title="back to home" to="/">
+            back to home
+          </Link>
         </CloseSearch>
         <SearchBooksFormWrapper>
           <SearchBooksBarInput

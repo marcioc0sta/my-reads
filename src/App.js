@@ -8,6 +8,11 @@ import SearchView from './views/SearchView/SearchView';
 
 
 import * as BooksAPI from './api/BooksAPI';
+
+const searchInitialState = {
+  searchResults: [],
+  searchError: ''
+};
 class App extends Component {
   state = {
     booksList: [],
@@ -24,6 +29,10 @@ class App extends Component {
 
   componentDidMount() {
     this.loadBooks();
+  }
+
+  resetSearchState = () => {
+    this.setState(searchInitialState);
   }
 
   loadBooks = () => {
@@ -48,6 +57,8 @@ class App extends Component {
     let booksFromResult = [];
 
     if(searchTerm.length === 0) return;
+
+    this.resetSearchState();
 
     BooksAPI.search(searchTerm).then(searchResults => {
       searchResults.map(bookFromResult => {
@@ -140,13 +151,18 @@ class App extends Component {
           exact
           path="/"
           render={() => (
-            <MainView moveToShelf={this.moveToShelf} booksShelf={booksShelf} />
+            <MainView 
+              resetSearchState={this.resetSearchState}
+              moveToShelf={this.moveToShelf} 
+              booksShelf={booksShelf} 
+            />
           )}
         />
         <Route
           path="/search"
           render={() => (
             <SearchView
+              resetSearchState={this.resetSearchState}
               booksShelf={booksShelf}
               searchResults={searchResults}
               makeSearchRequest={this.makeSearchRequest}

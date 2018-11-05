@@ -6,7 +6,7 @@ import Shelf from '../../components/Shelf/Shelf';
 
 import { OpenSearch } from './MainView.styles';
 
-const MainView = ({ booksShelf, moveToShelf }) => (
+const MainView = ({ booksShelf, moveToShelf, resetSearchState }) => (
   <div>
     <Header />
     <Shelf
@@ -28,7 +28,13 @@ const MainView = ({ booksShelf, moveToShelf }) => (
       books={booksShelf.read}
     />
     <OpenSearch>
-      <Link title="add a book" to="/search">add a book</Link>
+      <Link 
+        onClick={()=> resetSearchState()}
+        title="add a book"
+        to="/search"
+      >
+        add a book
+      </Link>
     </OpenSearch>
   </div>
 );
