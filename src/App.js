@@ -37,9 +37,8 @@ class App extends Component {
 
   loadBooks = () => {
     BooksAPI.getAll().then(booksList => {
-      this.setState(() => ({
-        booksList
-      }));
+      this.setState({ booksList });
+
       booksList.forEach(book => {
         this.organizeShelfs(book);
       });
@@ -52,11 +51,17 @@ class App extends Component {
     });
   }
 
-  makeSearchRequest = searchTerm => { 
+  insertBooksFromSearch = (arr, index, newItem) => [
+    ...arr.slice(0, index),
+    newItem,
+    ...arr.slice(index)
+  ];
+
+  makeSearchRequest = searchTerm => {
     const mybooks = this.state.booksList;
     let booksFromResult = [];
 
-    if(searchTerm.length === 0) return;
+    if (searchTerm.length === 0) return;
 
     this.resetSearchState();
 
@@ -68,19 +73,20 @@ class App extends Component {
 
       mybooks.map(book => {
         return booksFromResult.forEach(item => {
-          if(item.id === book.id) {
+          if (item.id === book.id) {
+            const index = booksFromResult.indexOf(item);
             const filtered = booksFromResult.filter(item => item.id !== book.id);
-            booksFromResult = filtered.concat(book);
+            booksFromResult = this.insertBooksFromSearch(filtered, index, book);
           }
         });
       });
-      
+
       this.setState(() => ({
         searchResults: booksFromResult,
       }));
     }).catch(() => {
       this.setState({
-        searchError: 'You are making a invalid search, please, check the search term',
+        searchError: 'Sorry, your search term does not match the criteria.',
       });
     });
   }
@@ -114,7 +120,7 @@ class App extends Component {
     const { booksShelf, searchResults } = this.state;
     const { shelf, id } = book;
 
-    if(newShelf === shelf) {
+    if (newShelf === shelf) {
       this.notify();
       return;
     }
@@ -151,10 +157,10 @@ class App extends Component {
           exact
           path="/"
           render={() => (
-            <MainView 
+            <MainView
               resetSearchState={this.resetSearchState}
-              moveToShelf={this.moveToShelf} 
-              booksShelf={booksShelf} 
+              moveToShelf={this.moveToShelf}
+              booksShelf={booksShelf}
             />
           )}
         />
