@@ -77,13 +77,13 @@ class App extends Component {
       const { searchResults } = this.state;
 
       return searchResults.forEach(item => {
-        if (item.id === book.id) {
-          const index = searchResults.indexOf(item);
-          const filtered = this.filterBook(searchResults, book);
-          this.setState({
-            searchResults: this.manageBookIndex(filtered, index, book)
-          });
-        }
+        if (item.id !== book.id) return;
+
+        const index = searchResults.indexOf(item);
+        const filtered = this.filterBook(searchResults, book);
+        this.setState({
+          searchResults: this.manageBookIndex(filtered, index, book)
+        });
       });
     });
   }
