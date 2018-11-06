@@ -8,14 +8,15 @@ const SearchView = ({
   searchResults, 
   booksShelf, 
   moveToShelf, 
-  resetSearchState 
+  resetSearchState,
+  searchError,
 }) => (
   <div className="search-books">
     <SearchForm 
       resetSearchState={resetSearchState}
       makeSearchRequest={makeSearchRequest}
     />
-    {searchResults !== undefined &&
+    {searchError.length === 0 &&
       <SearchResults
         moveToShelf={moveToShelf}
         booksShelf={booksShelf}

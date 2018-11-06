@@ -1,19 +1,19 @@
 import React from 'react';
 
 import ShelfItem from '../ShelfItem/ShelfItem';
+import { Loader } from '../../Globals';
 
 import { 
   ListBooksContent,
   BookShelfTitle,
   BooksGrid,
-  Loader,
   NoBooks,
 } from './Shelf.styles';
 
-const Shelf = ({ shelfTitle, books, moveToShelf, booksShelf }) => (
+const Shelf = ({ shelfTitle, books, moveToShelf, booksShelf, isLoading }) => (
   <ListBooksContent>
     <BookShelfTitle>{shelfTitle}</BookShelfTitle>
-    {booksShelf.isLoading ? 
+    {isLoading ? 
       <Loader/> :
       <BooksGrid>
         {books.length === 0 && <NoBooks>Too bad! no books ☹</NoBooks>}

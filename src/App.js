@@ -17,14 +17,14 @@ const searchInitialState = {
 };
 class App extends Component {
   state = {
-    booksList: [],
+    myBooks: [],
     booksShelf: {
       currentlyReading: [],
       wantToRead: [],
       read: [],
       none: [],
-      isLoading: true,
     },
+    isLoading: true,
     searchResults: [],
     searchError: ''
   }
@@ -38,37 +38,39 @@ class App extends Component {
   }
 
   loadBooks = () => {
-    BooksAPI.getAll().then(booksList => {
-      this.setState({ booksList });
-      booksList.forEach(book => {
+    BooksAPI.getAll().then(myBooks => {
+      this.setState({ myBooks });
+      myBooks.forEach(book => {
         this.organizeShelfs(book);
       });
     });
   }
 
   moveToShelf = (book, shelf) => {
+    this.activateLoading();
     BooksAPI.update(book, shelf).then(() => {
       this.updateShelfs(book, shelf);
     });
   }
 
-  putMyBooksOnSearch = (arr, index, newItem) => [
+  manageBookIndex = (arr, index, newItem) => [
     ...arr.slice(0, index),
     newItem,
     ...arr.slice(index)
   ];
 
   mergeMyBooksWithSearch = () => {
-    const { booksList } = this.state;
+    const { myBooks } = this.state;
 
-    booksList.map(book => {
+    myBooks.map(book => {
       const { searchResults } = this.state;
+
       return searchResults.forEach(item => {
         if (item.id === book.id) {
           const index = searchResults.indexOf(item);
           const filtered = searchResults.filter(item => item.id !== book.id);
           this.setState({
-            searchResults: this.putMyBooksOnSearch(filtered, index, book)
+            searchResults: this.manageBookIndex(filtered, index, book)
           });
         }
       });
@@ -76,42 +78,45 @@ class App extends Component {
   }
 
   makeSearchRequest = searchTerm => {
-    if (searchTerm.length === 0) return;
+    if (searchTerm.length === 0) {
+      this.resetSearchState();
+      return;
+    }
+
     this.resetSearchState();
 
     BooksAPI.search(searchTerm).then(searchResults => {
       searchResults.map(bookFromResult => {
         bookFromResult.shelf = 'none';
         return this.setState(prevState => ({
-          searchResults: prevState.searchResults.concat(bookFromResult)
+          searchResults: prevState.searchResults.concat(bookFromResult),
         }));
       });
 
       this.mergeMyBooksWithSearch();
     }).catch(() => {
+      const errorMessage = 'Sorry, your search doesn\'t match the criteria.';
       this.setState({
-        searchError: 'Sorry, your search term does not match the criteria.',
+        searchError: errorMessage,
       });
     });
   }
 
   organizeShelfs = book => {
     const { booksShelf } = this.state;
+
     this.setState(() => ({
       booksShelf: {
         ...this.state.booksShelf,
         [book.shelf]: booksShelf[book.shelf].concat(book),
-        isLoading: false,
-      }
+      },
+      isLoading: false,
     }));
   }
 
   activateLoading = () => {
     this.setState({
-      booksShelf: {
-        ...this.state.booksShelf,
-        isLoading: true,
-      }
+      isLoading: true,
     });
   }
 
@@ -121,7 +126,7 @@ class App extends Component {
   });
 
   updateShelfs = (book, newShelf) => {
-    const { booksShelf, searchResults, booksList } = this.state;
+    const { booksShelf, searchResults, myBooks } = this.state;
     const { shelf, id } = book;
 
     if (newShelf === shelf) {
@@ -129,12 +134,10 @@ class App extends Component {
       return;
     }
 
-    this.activateLoading();
-
     const updatedShelf = booksShelf[shelf].filter(filteredBook => (
       filteredBook.id !== id
     ));
-    const updatedBookList = booksList.filter(filteredBook => (
+    const updatedBookList = myBooks.filter(filteredBook => (
       filteredBook.id !== id
     ));
 
@@ -143,6 +146,9 @@ class App extends Component {
         filteredBook.id !== updatedBook.id
       ));
       const index = searchResults.indexOf(book);
+      const successMessage = `
+        ${updatedBook.title} has moved to: ${ShelfNames[updatedBook.shelf]}
+      `;
 
       this.setState(() => ({
         booksList: updatedBookList.concat(updatedBook),
@@ -150,17 +156,17 @@ class App extends Component {
           ...this.state.booksShelf,
           [shelf]: updatedShelf,
           [newShelf]: booksShelf[newShelf].concat(updatedBook),
-          isLoading: false,
         },
-        searchResults: this.putMyBooksOnSearch(updatedSearch, index, updatedBook)
+        isLoading: false,
+        searchResults: this.manageBookIndex(updatedSearch, index, updatedBook)
       }));
 
-      this.notify(`Your book has moved to: ${ShelfNames[updatedBook.shelf]}`);
+      this.notify(successMessage);
     });
   }
 
   render() {
-    const { booksShelf, searchResults } = this.state;
+    const { booksShelf, searchResults, searchError, isLoading } = this.state;
 
     return (
       <div className="App">
@@ -169,6 +175,7 @@ class App extends Component {
           path="/"
           render={() => (
             <MainView
+              isLoading={isLoading}
               resetSearchState={this.resetSearchState}
               moveToShelf={this.moveToShelf}
               booksShelf={booksShelf}
@@ -179,6 +186,7 @@ class App extends Component {
           path="/search"
           render={() => (
             <SearchView
+              searchError={searchError}
               resetSearchState={this.resetSearchState}
               booksShelf={booksShelf}
               searchResults={searchResults}
