@@ -33,9 +33,24 @@ class App extends Component {
     this.loadBooks();
   }
 
-  resetSearchState = () => {
-    this.setState(searchInitialState);
+  resetSearchState = () => this.setState(searchInitialState);
+
+  activateLoading = () => {
+    this.setState({
+      isLoading: true,
+    });
   }
+
+  notify = message => toast(message, {
+    type: 'info',
+    position: 'bottom-center',
+  });
+
+  filterBook = (shelf, book) => {
+    return shelf.filter(filteredBook => (
+      filteredBook.id !== book.id
+    ));
+  };
 
   loadBooks = () => {
     BooksAPI.getAll().then(myBooks => {
@@ -68,7 +83,7 @@ class App extends Component {
       return searchResults.forEach(item => {
         if (item.id === book.id) {
           const index = searchResults.indexOf(item);
-          const filtered = searchResults.filter(item => item.id !== book.id);
+          const filtered = this.filterBook(searchResults, book);
           this.setState({
             searchResults: this.manageBookIndex(filtered, index, book)
           });
@@ -114,38 +129,20 @@ class App extends Component {
     }));
   }
 
-  activateLoading = () => {
-    this.setState({
-      isLoading: true,
-    });
-  }
-
-  notify = message => toast(message, {
-    type: 'info',
-    position: 'bottom-center',
-  });
-
   updateShelfs = (book, newShelf) => {
     const { booksShelf, searchResults, myBooks } = this.state;
     const { shelf, id } = book;
-    this.resetSearchState();
 
     if (newShelf === shelf) {
       this.notify('The book is already on the shelf');
       return;
     }
 
-    const updatedShelf = booksShelf[shelf].filter(filteredBook => (
-      filteredBook.id !== id
-    ));
-    const updatedBookList = myBooks.filter(filteredBook => (
-      filteredBook.id !== id
-    ));
+    const updatedShelf = this.filterBook(booksShelf[shelf], book);
+    const updatedBookList = this.filterBook(myBooks, book);
 
     BooksAPI.get(id).then(updatedBook => {
-      const updatedSearch = searchResults.filter(filteredBook => (
-        filteredBook.id !== updatedBook.id
-      ));
+      const updatedSearch = this.filterBook(searchResults, updatedBook);
       const index = searchResults.indexOf(book);
       const successMessage = `
         ${updatedBook.title} has moved to: ${ShelfNames[updatedBook.shelf]}
