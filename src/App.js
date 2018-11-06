@@ -50,16 +50,31 @@ class App extends Component {
     });
   }
 
-  insertBooksFromSearch = (arr, index, newItem) => [
+  insertMyBooksOnSearch = (arr, index, newItem) => [
     ...arr.slice(0, index),
     newItem,
     ...arr.slice(index)
   ];
 
-  makeSearchRequest = searchTerm => {
-    if (searchTerm.length === 0) return;
-
+  mergeMyBooksWithSearch = () => {
     const { booksList } = this.state;
+
+    booksList.map(book => {
+      const { searchResults } = this.state;
+      return searchResults.forEach(item => {
+        if (item.id === book.id) {
+          const index = searchResults.indexOf(item);
+          const filtered = searchResults.filter(item => item.id !== book.id);
+          this.setState({
+            searchResults: this.insertMyBooksOnSearch(filtered, index, book)
+          });
+        }
+      });
+    });
+  }
+
+  makeSearchRequest = searchTerm => {
+    if (searchTerm.length === 0) return;    
     this.resetSearchState();
 
     BooksAPI.search(searchTerm).then(searchResults => {
@@ -70,18 +85,7 @@ class App extends Component {
         }));
       });
 
-      booksList.map(book => {
-        const { searchResults } = this.state;
-        return searchResults.forEach(item => {
-          if (item.id === book.id) {
-            const index = searchResults.indexOf(item);
-            const filtered = searchResults.filter(item => item.id !== book.id);
-            this.setState({
-              searchResults: this.insertBooksFromSearch(filtered, index, book)
-            });
-          }
-        });
-      });
+      this.mergeMyBooksWithSearch();
     }).catch(() => {
       this.setState({
         searchError: 'Sorry, your search term does not match the criteria.',
