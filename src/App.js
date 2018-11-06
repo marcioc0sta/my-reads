@@ -38,7 +38,6 @@ class App extends Component {
   loadBooks = () => {
     BooksAPI.getAll().then(booksList => {
       this.setState({ booksList });
-
       booksList.forEach(book => {
         this.organizeShelfs(book);
       });
@@ -58,32 +57,31 @@ class App extends Component {
   ];
 
   makeSearchRequest = searchTerm => {
-    const mybooks = this.state.booksList;
-    let booksFromResult = [];
-
     if (searchTerm.length === 0) return;
 
+    const { booksList } = this.state;
     this.resetSearchState();
 
     BooksAPI.search(searchTerm).then(searchResults => {
       searchResults.map(bookFromResult => {
         bookFromResult.shelf = 'none';
-        return booksFromResult = booksFromResult.concat(bookFromResult);
+        return this.setState(prevState => ({
+          searchResults: prevState.searchResults.concat(bookFromResult)
+        }));
       });
 
-      mybooks.map(book => {
-        return booksFromResult.forEach(item => {
+      booksList.map(book => {
+        const { searchResults } = this.state;
+        return searchResults.forEach(item => {
           if (item.id === book.id) {
-            const index = booksFromResult.indexOf(item);
-            const filtered = booksFromResult.filter(item => item.id !== book.id);
-            booksFromResult = this.insertBooksFromSearch(filtered, index, book);
+            const index = searchResults.indexOf(item);
+            const filtered = searchResults.filter(item => item.id !== book.id);
+            this.setState({
+              searchResults: this.insertBooksFromSearch(filtered, index, book)
+            });
           }
         });
       });
-
-      this.setState(() => ({
-        searchResults: booksFromResult,
-      }));
     }).catch(() => {
       this.setState({
         searchError: 'Sorry, your search term does not match the criteria.',
@@ -117,7 +115,7 @@ class App extends Component {
   });
 
   updateShelfs = (book, newShelf) => {
-    const { booksShelf, searchResults } = this.state;
+    const { booksShelf, searchResults, booksList } = this.state;
     const { shelf, id } = book;
 
     if (newShelf === shelf) {
@@ -130,13 +128,16 @@ class App extends Component {
     const updatedShelf = booksShelf[shelf].filter(filteredBook => (
       filteredBook.id !== id
     ));
+    const updatedBookList = booksList.filter(filteredBook => (
+      filteredBook.id !== id
+    ));
 
     BooksAPI.get(id).then(updatedBook => {
       const updatedSearch = searchResults.filter(filteredBook => (
         filteredBook.id !== updatedBook.id
       ));
-
       this.setState(() => ({
+        booksList: updatedBookList.concat(updatedBook),
         booksShelf: {
           ...this.state.booksShelf,
           [shelf]: updatedShelf,
