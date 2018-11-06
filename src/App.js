@@ -128,6 +128,7 @@ class App extends Component {
   updateShelfs = (book, newShelf) => {
     const { booksShelf, searchResults, myBooks } = this.state;
     const { shelf, id } = book;
+    this.resetSearchState();
 
     if (newShelf === shelf) {
       this.notify('The book is already on the shelf');
@@ -151,7 +152,7 @@ class App extends Component {
       `;
 
       this.setState(() => ({
-        booksList: updatedBookList.concat(updatedBook),
+        myBooks: updatedBookList.concat(updatedBook),
         booksShelf: {
           ...this.state.booksShelf,
           [shelf]: updatedShelf,
