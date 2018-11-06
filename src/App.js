@@ -35,11 +35,7 @@ class App extends Component {
 
   resetSearchState = () => this.setState(searchInitialState);
 
-  activateLoading = () => {
-    this.setState({
-      isLoading: true,
-    });
-  }
+  activateLoading = () => this.setState({ isLoading: true, });
 
   notify = message => toast(message, {
     type: 'info',
@@ -61,18 +57,18 @@ class App extends Component {
     });
   }
 
+  manageBookIndex = (arr, index, newItem) => [
+    ...arr.slice(0, index),
+    newItem,
+    ...arr.slice(index)
+  ];
+
   moveToShelf = (book, shelf) => {
     this.activateLoading();
     BooksAPI.update(book, shelf).then(() => {
       this.updateShelfs(book, shelf);
     });
   }
-
-  manageBookIndex = (arr, index, newItem) => [
-    ...arr.slice(0, index),
-    newItem,
-    ...arr.slice(index)
-  ];
 
   mergeMyBooksWithSearch = () => {
     const { myBooks } = this.state;
@@ -110,10 +106,8 @@ class App extends Component {
 
       this.mergeMyBooksWithSearch();
     }).catch(() => {
-      const errorMessage = 'Sorry, your search doesn\'t match the criteria.';
-      this.setState({
-        searchError: errorMessage,
-      });
+      const searchError = 'Sorry, your search doesn\'t match the criteria.';
+      this.setState({ searchError });
     });
   }
 
