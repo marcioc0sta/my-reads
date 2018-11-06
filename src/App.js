@@ -3,6 +3,8 @@ import { Route } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { ShelfNames } from './ShelfNames.enum';
+
 import MainView from './views/MainView/MainView';
 import SearchView from './views/SearchView/SearchView';
 
@@ -50,7 +52,7 @@ class App extends Component {
     });
   }
 
-  insertMyBooksOnSearch = (arr, index, newItem) => [
+  putMyBooksOnSearch = (arr, index, newItem) => [
     ...arr.slice(0, index),
     newItem,
     ...arr.slice(index)
@@ -66,7 +68,7 @@ class App extends Component {
           const index = searchResults.indexOf(item);
           const filtered = searchResults.filter(item => item.id !== book.id);
           this.setState({
-            searchResults: this.insertMyBooksOnSearch(filtered, index, book)
+            searchResults: this.putMyBooksOnSearch(filtered, index, book)
           });
         }
       });
@@ -74,7 +76,7 @@ class App extends Component {
   }
 
   makeSearchRequest = searchTerm => {
-    if (searchTerm.length === 0) return;    
+    if (searchTerm.length === 0) return;
     this.resetSearchState();
 
     BooksAPI.search(searchTerm).then(searchResults => {
@@ -113,7 +115,7 @@ class App extends Component {
     });
   }
 
-  notify = () => toast('The book is already on the shelf', {
+  notify = message => toast(message, {
     type: 'info',
     position: 'bottom-center',
   });
@@ -123,7 +125,7 @@ class App extends Component {
     const { shelf, id } = book;
 
     if (newShelf === shelf) {
-      this.notify();
+      this.notify('The book is already on the shelf');
       return;
     }
 
@@ -140,6 +142,8 @@ class App extends Component {
       const updatedSearch = searchResults.filter(filteredBook => (
         filteredBook.id !== updatedBook.id
       ));
+      const index = searchResults.indexOf(book);
+
       this.setState(() => ({
         booksList: updatedBookList.concat(updatedBook),
         booksShelf: {
@@ -148,8 +152,10 @@ class App extends Component {
           [newShelf]: booksShelf[newShelf].concat(updatedBook),
           isLoading: false,
         },
-        searchResults: [...updatedSearch, updatedBook],
+        searchResults: this.putMyBooksOnSearch(updatedSearch, index, updatedBook)
       }));
+
+      this.notify(`Your book has moved to: ${ShelfNames[updatedBook.shelf]}`);
     });
   }
 

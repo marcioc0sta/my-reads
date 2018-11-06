@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ShelfNames } from './ShelfNames.enum';
+import { ShelfNames } from '../../ShelfNames.enum';
 
 import {
   BookShelfChanger,
