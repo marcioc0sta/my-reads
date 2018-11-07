@@ -50,9 +50,16 @@ class App extends Component {
 
   loadBooks = () => {
     BooksAPI.getAll().then(myBooks => {
-      this.setState({ myBooks });
-      myBooks.forEach(book => {
-        this.organizeShelfs(book);
+      this.setState({
+        myBooks,
+        booksShelf: {
+          ...this.state.booksShelf,
+          ...myBooks.reduce((booksShelf, book) => ({
+            ...booksShelf,
+            [book.shelf]: [].concat((booksShelf[book.shelf] || []), book),
+          }), {}),
+        },
+        isLoading: false,
       });
     });
   }
@@ -111,18 +118,6 @@ class App extends Component {
       const searchError = 'Sorry, your search doesn\'t match the criteria.';
       this.setState({ searchError });
     });
-  }
-
-  organizeShelfs = book => {
-    const { booksShelf } = this.state;
-
-    this.setState(() => ({
-      booksShelf: {
-        ...this.state.booksShelf,
-        [book.shelf]: this.pushBookInShelf(booksShelf[book.shelf], book),
-      },
-      isLoading: false,
-    }));
   }
 
   updateShelfs = (book, newShelf) => {
