@@ -1,29 +1,44 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import Header from '../../components/Header/Header';
 import Shelf from '../../components/Shelf/Shelf';
 
-const MainView = ({ booksShelf, moveToShelf }) => (
+import { OpenSearch } from './MainView.styles';
+
+const MainView = ({ booksShelf, moveToShelf, resetSearchState, isLoading }) => (
   <div>
     <Header />
-    <Shelf 
+    <Shelf
+      isLoading={isLoading}
       booksShelf={booksShelf}
       moveToShelf={moveToShelf}
       shelfTitle="Currently Reading"
       books={booksShelf.currentlyReading}
     />
-    <Shelf 
+    <Shelf
+      isLoading={isLoading}
       booksShelf={booksShelf}
       moveToShelf={moveToShelf}
       shelfTitle="Want to Read"
-      books={booksShelf.wantToRead} 
+      books={booksShelf.wantToRead}
     />
-    <Shelf 
+    <Shelf
+      isLoading={isLoading}
       booksShelf={booksShelf}
-      moveToShelf={moveToShelf} 
-      shelfTitle="Read" 
+      moveToShelf={moveToShelf}
+      shelfTitle="Read"
       books={booksShelf.read}
     />
+    <OpenSearch>
+      <Link 
+        onClick={()=> resetSearchState()}
+        title="add a book"
+        to="/search"
+      >
+        add a book
+      </Link>
+    </OpenSearch>
   </div>
 );
 

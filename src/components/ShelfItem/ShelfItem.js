@@ -23,7 +23,9 @@ const ShelfItem = props => {
         />
       </BookTop>
       <BookTitle>{bookTitle}</BookTitle>
-      <BookAuthors>{authors.map(author => author)}</BookAuthors>
+      <BookAuthors>
+        {authors && authors.map(author => <li key={author}>{author}</li>)}
+      </BookAuthors>
     </Book>
   );
 };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ShelfNames } from './ShelfNames.enum';
+import { ShelfNames } from '../../ShelfNames.enum';
 
 import {
   BookShelfChanger,
@@ -16,7 +16,6 @@ class ShelfChanger extends Component {
   renderShelfsName = () => {
     const { booksShelf } = this.props;
     const { isLoading, ...shelfsObject } = booksShelf; // eslint-disable-line
-
     return Object.keys(shelfsObject);
   }
 
@@ -25,6 +24,7 @@ class ShelfChanger extends Component {
     return (
       <BookShelfChanger>
         <BookShelfChangerSelect
+          title="Manage your book shelf"
           onChange={event => this.onShelfChange(event.target.value)}
         >
           <option disabled="">Move to...</option>
