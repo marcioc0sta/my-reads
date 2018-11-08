@@ -2,13 +2,6 @@ import styled from 'styled-components';
 
 import { colors } from '../../Globals';
 
-const NoBooks = styled.div`
-  background: ${colors.gray100};
-  color: ${colors.gray200};
-  margin: 30px 0 -60px;
-  padding: 10px 30px;
-`;
-
 const ListBooksContent = styled.div`
   flex: 1;
   padding: 0 20px 80px;
@@ -32,5 +25,4 @@ export {
   ListBooksContent,
   BookShelfTitle,
   BooksGrid,
-  NoBooks,
 };

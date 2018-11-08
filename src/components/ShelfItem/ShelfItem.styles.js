@@ -16,7 +16,7 @@ const BookTop = styled.div`
 
 const BookCover = styled.div`
   background: url(${props => props.imageUrl}) ${colors.gray100} 0 0 no-repeat;
-  background-size: cover;
+  background-size: 100% 100%;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   height: 193px;
   width: 128px;

@@ -125,7 +125,7 @@ class App extends Component {
     const { shelf, id } = book;
 
     if (newShelf === shelf) {
-      this.notify('The book is already on the shelf');
+      this.notify(`${book.title} is already on the ${ShelfNames[shelf]}`);
       return;
     }
 

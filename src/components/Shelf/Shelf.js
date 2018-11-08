@@ -1,13 +1,13 @@
 import React from 'react';
+import { get } from 'lodash';
 
 import ShelfItem from '../ShelfItem/ShelfItem';
-import { Loader } from '../../Globals';
+import { Loader, imagePlaceholder, NoBooks } from '../../Globals';
 
 import { 
   ListBooksContent,
   BookShelfTitle,
   BooksGrid,
-  NoBooks,
 } from './Shelf.styles';
 
 const Shelf = ({ shelfTitle, books, moveToShelf, booksShelf, isLoading }) => (
@@ -18,6 +18,11 @@ const Shelf = ({ shelfTitle, books, moveToShelf, booksShelf, isLoading }) => (
       <BooksGrid>
         {books.length === 0 && <NoBooks>Too bad! no books ☹</NoBooks>}
         {books.map(book => {
+          const bookThumbnail = get(
+            book,
+            'imageLinks.smallThumbnail',
+            imagePlaceholder
+            );
           return (
             <li key={book.id}>
               <ShelfItem 
@@ -25,7 +30,7 @@ const Shelf = ({ shelfTitle, books, moveToShelf, booksShelf, isLoading }) => (
                 moveToShelf={moveToShelf}
                 book={book}
                 bookTitle={book.title}
-                cover={book.imageLinks.smallThumbnail}
+                cover={bookThumbnail}
                 authors={book.authors}
               />
             </li>

@@ -18,7 +18,18 @@ const colors = {
   gray300: '#dedede',
 };
 
+const NoBooks = styled.div`
+  background: ${colors.gray100};
+  color: ${colors.gray200};
+  margin: 55px 0 -60px;
+  padding: 10px 30px;
+`;
+
+const imagePlaceholder = 'https://via.placeholder.com/182x193';
+
 export {
   colors,
   Loader,
+  imagePlaceholder,
+  NoBooks,
 };
